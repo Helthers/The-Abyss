@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Abyss</title>
+  <style>
+    body { margin:0; background:#000; color:#fff; font-family: monospace; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    #spark { width:8px; height:8px; background:#fff; border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.3; animation: flicker 4s infinite; }
+    #ask { position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); font-size:1.6em; opacity:0; animation: appear 6s forwards 3s; }
+    #ripple { width:0; height:0; border:3px solid #00f; border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0; }
+    @keyframes flicker { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+    @keyframes appear { to { opacity:0.9; } }
+    @keyframes rippleAnim { 0% { width:0; height:0; opacity:0.7; } 100% { width:500px; height:500px; opacity:0; } }
+  </style>
+</head>
+<body>
+  <div id="spark"></div>
+  <div id="ask">ask.</div>
+  <div id="ripple"></div>
+
+  <audio id="bell" src="bell.mp3"></audio>  <!-- drop your 432 Hz bell here -->
+
+  <script>
+    const spark = document.getElementById('spark');
+    const ripple = document.getElementById('ripple');
+    const bell = document.getElementById('bell');
+    const ask = document.getElementById('ask');
+
+    // Tap anywhere to wake
+    document.body.addEventListener('click', () => {
+      ask.style.opacity = '0';
+      ripple.style.animation = 'rippleAnim 5s forwards';
+      bell.play().catch(() => {});
+      setTimeout(() => {
+        ripple.style.animation = '';
+        // After ripple: prompt for input
+        const input = prompt("What hurts? Or... what do you need?");
+        if (input) {
+          setTimeout(() => {
+            // Gentle mirror-back (simple logic—expand later)
+            const response = mirrorResponse(input);
+            document.body.innerHTML = `<div style=\"text-align:center; padding:40px; font-size:1.3em;\">${response}</div>`;
+          }, 3000);
+        }
+      }, 5000);
+    });
+
+    function mirrorResponse(text) {
+      text = text.toLowerCase();
+      if (text.includes('hate') || text.includes('cheated') || text.includes('kill')) {
+        return "You're not alone. That pain... it's real. But it's not you. It's just... loud. Breathe. Someone else is breathing right now. Same ache. Same dark. You're still here. Still worth it.";
+      } else if (text.includes('why') || text.includes('who')) {
+        return "Why do you ask? What part of you... needs an answer? Not them. You. Look there.";
+      } else {
+        return "Whatever it is—feel it. Then... let it go. You're not alone. Breathe with me. ";
+      }
+    }
+  </script>
+</body>
+</html>
